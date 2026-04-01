@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+// step01: Protobuf 基礎 — メッセージ・enum・nested・repeated の学習
+// サービス定義はなし。スキーマ設計だけに集中する。
+package step01;
+
+option go_package = "github.com/grpc-learn/step01;step01";
+
+// ユーザーロール
+enum UserRole {
+  USER_ROLE_UNSPECIFIED = 0; // デフォルト値は必ず UNSPECIFIED にする（proto スタイルガイド）
+  USER_ROLE_ADMIN       = 1;
+  USER_ROLE_MEMBER      = 2;
+  USER_ROLE_GUEST       = 3;
+}
+
+// 住所（nested message の例）
+message Address {
+  string street  = 1;
+  string city    = 2;
+  string country = 3;
+  string zip     = 4;
+}
+
+// ユーザー
+message User {
+  string   id      = 1;
+  string   name    = 2;
+  string   email   = 3;
+  UserRole role    = 4;
+  Address  address = 5;           // nested message
+  repeated string tags = 6;       // repeated field
+}
+
+// リクエスト / レスポンス（将来のサービス定義に備えた DTO）
+message CreateUserRequest  { User user = 1; }
+message CreateUserResponse {
+  User   user       = 1;
+  string created_at = 2;
+}
+
+message GetUserRequest  { string id = 1; }
+message GetUserResponse { User user = 1; }

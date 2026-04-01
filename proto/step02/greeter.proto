@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+// step02: 最初の gRPC サービス — Unary 通信の Hello World
+package step02;
+
+option go_package = "github.com/grpc-learn/step02;step02";
+
+message SayHelloRequest {
+  string name     = 1; // 挨拶する相手の名前
+  string language = 2; // 言語コード（"ja" / "en" / "es"）
+}
+
+message SayHelloResponse {
+  string message     = 1; // 挨拶メッセージ
+  string server_time = 2; // サーバー処理時刻（RFC3339）
+}
+
+// Unary RPC のみを持つシンプルなサービス
+service GreeterService {
+  rpc SayHello(SayHelloRequest) returns (SayHelloResponse);
+}

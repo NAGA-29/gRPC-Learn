@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+// step09: マルチサービス — 通知ワーカーサービス（内部サービス）
+package step09;
+
+option go_package = "github.com/grpc-learn/step09;step09";
+
+message NotifyRequest {
+  string order_id = 1;
+  string user_id  = 2;
+  string channel  = 3; // "email" / "sms" / "push"
+  string message  = 4;
+}
+
+message NotifyResponse {
+  bool   sent       = 1;
+  string sent_at    = 2;
+}
+
+// 注文確定後に非同期的に通知を送るワーカー
+service NotificationService {
+  rpc Notify(NotifyRequest) returns (NotifyResponse);
+}

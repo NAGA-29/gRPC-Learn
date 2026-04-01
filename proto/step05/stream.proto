@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+// step05: Streaming — サーバー / クライアント / 双方向ストリーミング
+package step05;
+
+option go_package = "github.com/grpc-learn/step05;step05";
+
+// --- サーバーストリーミング: 株価リアルタイム配信 ---
+message WatchStockRequest  { string symbol = 1; }
+message StockPrice {
+  string symbol    = 1;
+  double price     = 2;
+  string timestamp = 3;
+}
+
+// --- クライアントストリーミング: ファイルアップロード ---
+message FileChunk {
+  bytes  data     = 1;
+  int32  sequence = 2;
+  string filename = 3;
+}
+message UploadSummary {
+  int32  total_chunks = 1;
+  int64  total_bytes  = 2;
+  string status       = 3;
+}
+
+// --- 双方向ストリーミング: チャット ---
+message ChatMessage {
+  string user      = 1;
+  string content   = 2;
+  string room      = 3;
+  string timestamp = 4;
+}
+
+service StreamService {
+  // サーバーストリーミング: 株価を継続的に受信する
+  rpc WatchStock(WatchStockRequest) returns (stream StockPrice);
+
+  // クライアントストリーミング: ファイルをチャンクに分割して送信し、完了サマリを受け取る
+  rpc UploadFile(stream FileChunk) returns (UploadSummary);
+
+  // 双方向ストリーミング: チャットルーム
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+}
