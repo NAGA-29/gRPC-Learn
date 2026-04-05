@@ -7,7 +7,9 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/grpc-learn/step10;step10";
 
-// 標準的なヘルスチェック（grpc.health.v1 と互換）
+// 独自ヘルスチェック RPC（grpc.health.v1.Health サービスとは非互換。
+// grpc_health_probe や Kubernetes の grpc probe を使う場合は
+// google.golang.org/grpc/health パッケージの標準実装を別途登録してください）
 message HealthCheckRequest  { string service = 1; }
 message HealthCheckResponse {
   enum ServingStatus {

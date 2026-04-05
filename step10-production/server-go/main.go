@@ -23,7 +23,6 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/reflection"
 
 	pb "github.com/grpc-learn/step10/server-go/gen/step10"
@@ -114,8 +113,6 @@ func main() {
 		serverOpts = append(serverOpts, grpc.Creds(credentials.NewTLS(tlsConfig)))
 	} else {
 		logger.Info("Insecure モードで起動します（TLS_ENABLED=true で TLS 有効化）")
-		// 学習用のため insecure で起動。本番では TLS を使うこと。
-		_ = insecure.NewCredentials() // insecure パッケージの使用を示すためのコメント
 	}
 
 	// --- TCP リスナー作成 ---

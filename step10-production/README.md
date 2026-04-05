@@ -91,7 +91,13 @@ const transport = createGrpcTransport({
 
 ## gRPC ヘルスチェックプロトコル
 
-### grpc.health.v1 プロトコル
+> **注意**: このステップの `ProductionService.Check` RPC は学習用の **独自実装** です。
+> `grpc.health.v1.Health` サービス（標準プロトコル）とは互換性がないため、
+> `grpc_health_probe` コマンドや Kubernetes の `grpc` probe はそのままでは動作しません。
+> 標準互換が必要な場合は `google.golang.org/grpc/health` パッケージを使い、
+> `grpc.health.v1.Health` サービスをサーバーに別途登録してください。
+
+### grpc.health.v1 標準プロトコルについて
 
 gRPC の標準ヘルスチェックプロトコルは [GRPC Health Checking Protocol](https://github.com/grpc/grpc/blob/master/doc/health-checking.md) として定められています。
 
@@ -109,34 +115,42 @@ service Health {
 | `SERVING` (1) | 正常稼働中、リクエストを受け付けられる |
 | `NOT_SERVING` (2) | 一時的にサービス不能（デプロイ中、過負荷など） |
 
-### Kubernetes との連携
+### 標準互換にする場合の実装例
 
-Kubernetes の Pod 設定で gRPC ヘルスチェックを使う例:
+```go
+import "google.golang.org/grpc/health"
+import healthpb "google.golang.org/grpc/health/grpc_health_v1"
+
+healthServer := health.NewServer()
+healthpb.RegisterHealthServer(srv, healthServer)
+healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
+```
+
+### HTTP ヘルスチェック（このステップの実装）
+
+このステップでは HTTP ヘルスエンドポイントも用意しています（Kubernetes の livenessProbe / readinessProbe に対応）:
+
+```bash
+# HTTP ヘルスチェック（標準対応）
+curl http://localhost:8080/healthz
+# 出力: ok
+```
 
 ```yaml
+# Kubernetes での HTTP ヘルスチェック設定例
 livenessProbe:
-  grpc:
-    port: 50051
-    service: "ProductionService"
+  httpGet:
+    path: /healthz
+    port: 8080
   initialDelaySeconds: 10
   periodSeconds: 30
 
 readinessProbe:
-  grpc:
-    port: 50051
+  httpGet:
+    path: /healthz
+    port: 8080
   initialDelaySeconds: 5
   periodSeconds: 10
-```
-
-### grpc_health_probe ツール
-
-```bash
-# インストール
-go install github.com/grpc-ecosystem/grpc-health-probe@latest
-
-# ヘルスチェック実行
-grpc_health_probe -addr=localhost:50051
-# 出力: status: SERVING
 ```
 
 ## Prometheus メトリクスの確認

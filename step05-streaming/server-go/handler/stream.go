@@ -6,7 +6,9 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"log/slog"
 	"math/rand"
 	"sync"
@@ -227,8 +229,7 @@ func (s *StreamServer) broadcast(room string, msg *pb.ChatMessage, _ pb.StreamSe
 
 // isEOF は gRPC ストリーム終了エラー（io.EOF 相当）かどうかを判定する。
 func isEOF(err error) bool {
-	// gRPC では io.EOF が直接返ることがある
-	return err.Error() == "EOF"
+	return errors.Is(err, io.EOF)
 }
 
 // ----------------------------------------------------------------
