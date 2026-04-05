@@ -98,7 +98,7 @@ func (s *gatewayServer) PlaceOrder(
 	// --- Step 3: 通知送信 ---
 	// 通知の失敗は注文完了に影響させない。
 	// 実務では通知をメッセージキューで非同期化するパターンが多い。
-	notifyCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	notifyCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
 	notifyResp, notifyErr := s.notificationClient.Notify(notifyCtx, &pb.NotifyRequest{
