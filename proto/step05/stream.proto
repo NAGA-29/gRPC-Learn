@@ -10,7 +10,7 @@ message WatchStockRequest  { string symbol = 1; }
 message StockPrice {
   string symbol    = 1;
   double price     = 2;
-  string timestamp = 3;
+  int64  timestamp = 3;
 }
 
 // --- クライアントストリーミング: ファイルアップロード ---
