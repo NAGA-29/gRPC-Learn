@@ -74,23 +74,30 @@ grpc-learning-lab/
 
 ## コード生成について
 
-**生成済みコードはリポジトリにコミット済み**のため、すぐに実行できます。
+**生成済みコードはリポジトリに含まれていません。** 各ステップを実行する前に、必ずコード生成を行ってください。
 
-proto ファイルを変更した場合は再生成してください：
+各 step の `gen/` ディレクトリ（例: `step02-unary-go-ts/server-go/gen/step02/`）は `.gitkeep` のみで空の状態です。
+`buf generate` を実行することで Go スタブおよび TypeScript クライアントコードが生成されます。
 
 ```bash
-# Go + TypeScript の再生成
+# Go + TypeScript の生成（リポジトリルートで実行）
 buf generate
 
-# Python の再生成（step03 のみ）
+# Python の生成（step03 のみ）
 bash scripts/gen-python.sh
 ```
+
+> **注意:** `buf generate` を実行しないまま `go run .` や `npm start` を行うと、
+> `gen/` 配下のパッケージが存在しないため import エラーが発生します。
 
 ---
 
 ## クイックスタート
 
 ```bash
+# 最初にコード生成を実行（リポジトリルートで）
+buf generate
+
 # Step 02: Go サーバー起動
 cd step02-unary-go-ts/server-go
 go run .
