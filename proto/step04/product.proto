@@ -3,7 +3,6 @@ syntax = "proto3";
 // step04: Unary 設計 — FieldMask / ページネーション / Money 型 / REST との比較
 package step04;
 
-import "google/protobuf/timestamp.proto";
 import "google/protobuf/field_mask.proto";
 
 option go_package = "github.com/grpc-learn/step04;step04";
@@ -21,13 +20,15 @@ message Product {
   string name        = 2;
   string description = 3;
   Money  price       = 4;
-  int32  stock       = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
+  string category    = 5;
+  bool   in_stock    = 6;
 }
 
 // --- GetProduct ---
-message GetProductRequest  { string product_id = 1; }
+message GetProductRequest {
+  string                    id        = 1; // 商品 ID
+  google.protobuf.FieldMask read_mask = 2; // 取得するフィールドを制限する（省略時は全フィールド）
+}
 message GetProductResponse { Product product = 1; }
 
 // --- ListProducts（ページネーション）---
@@ -38,7 +39,7 @@ message ListProductsRequest {
 message ListProductsResponse {
   repeated Product products        = 1;
   string           next_page_token = 2; // 空なら最終ページ
-  int32            total_count     = 3;
+  int32            total_size      = 3; // 全件数
 }
 
 // --- UpdateProduct（FieldMask で部分更新）---
