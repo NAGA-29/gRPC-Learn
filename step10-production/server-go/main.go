@@ -39,7 +39,8 @@ type productionServer struct {
 }
 
 // Check はヘルスチェックリクエストを処理する。
-// grpc.health.v1 プロトコルに準拠した実装を health パッケージに委譲する。
+// grpc.health.v1 を参考にした独自 RPC であり、標準プロトコルには準拠していない。
+// 処理を health パッケージに委譲する。
 func (s *productionServer) Check(
 	ctx context.Context,
 	req *pb.HealthCheckRequest,

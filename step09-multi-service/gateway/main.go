@@ -67,8 +67,9 @@ func (s *gatewayServer) PlaceOrder(
 	})
 	if err != nil {
 		slog.Error("InventoryService.ReserveStock 失敗", "error", err)
-		// InventoryService のエラーをそのままクライアントに返す
-		return nil, fmt.Errorf("在庫確保に失敗しました: %w", err)
+		// InventoryService の gRPC ステータスコードをそのままクライアントに伝播する。
+		// fmt.Errorf でラップすると Unknown になるため、err をそのまま返す。
+		return nil, err
 	}
 
 	// 在庫不足の場合はビジネスロジックエラーとして返す
