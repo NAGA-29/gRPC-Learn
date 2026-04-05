@@ -15,20 +15,20 @@ message StockPrice {
 
 // --- クライアントストリーミング: ファイルアップロード ---
 message FileChunk {
-  bytes  data     = 1;
-  int32  sequence = 2;
-  string filename = 3;
+  bytes  data      = 1;
+  int32  sequence  = 2;
+  string file_name = 3;
 }
 message UploadSummary {
-  int32  total_chunks = 1;
-  int64  total_bytes  = 2;
-  string status       = 3;
+  int32  chunk_count = 1;
+  int64  total_bytes = 2;
+  string status      = 3;
 }
 
 // --- 双方向ストリーミング: チャット ---
 message ChatMessage {
-  string user      = 1;
-  string content   = 2;
+  string sender    = 1;
+  string text      = 2;
   string room      = 3;
   string timestamp = 4;
 }
