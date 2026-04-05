@@ -7,16 +7,16 @@ managed:
 plugins:
   # Go — protobuf メッセージ生成
   - remote: buf.build/protocolbuffers/go
-    out: .
+    out: gen
     opt:
       - paths=source_relative
   # Go — gRPC サービススタブ生成
   - remote: buf.build/grpc/go
-    out: .
+    out: gen
     opt:
       - paths=source_relative
   # TypeScript — @connectrpc/connect（Node + ブラウザ対応）
   - remote: buf.build/connectrpc/es
-    out: .
+    out: gen
     opt:
       - target=ts
