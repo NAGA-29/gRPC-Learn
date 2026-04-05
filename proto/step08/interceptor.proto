@@ -9,8 +9,8 @@ option go_package = "github.com/grpc-learn/step08;step08";
 message PingRequest  { string message = 1; }
 message PingResponse {
   string message    = 1;
-  string server_id  = 2; // サーバー識別子（インターセプターが付与）
-  int64  latency_ms = 3; // サーバー内処理時間（logging インターセプターが計測）
+  string server_id  = 2; // サーバー識別子（handler 側で設定）
+  int64  latency_ms = 3; // サーバー内処理時間（現状の実装では未設定のため 0）
 }
 
 // 保護エンドポイント（Authorization ヘッダーが必要）
