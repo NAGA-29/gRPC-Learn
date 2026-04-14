@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+// step06: Metadata / Deadline — HTTP ヘッダー相当のメタデータとタイムアウト制御
+package step06;
+
+option go_package = "github.com/grpc-learn/step06;step06";
+
+message EchoRequest {
+  string message  = 1;
+  int32  delay_ms = 2; // サーバーが意図的に sleep する時間（ms）
+                       // deadline より大きい値を指定するとタイムアウトを体験できる
+}
+
+message EchoResponse {
+  string              message           = 1;
+  map<string, string> received_metadata = 2; // クライアントが送ったメタデータをそのまま返す
+  string              processed_at      = 3; // 処理完了時刻
+}
+
+service MetadataService {
+  rpc Echo(EchoRequest) returns (EchoResponse);
+}

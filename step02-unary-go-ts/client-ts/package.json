@@ -1,0 +1,20 @@
+{
+  "name": "grpc-learn-step02-client",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "ts-node --esm src/client.ts",
+    "build": "tsc",
+    "gen": "buf generate ../../proto/step02 --template ../../buf.gen.yaml"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.0.0",
+    "@connectrpc/connect": "^2.0.0",
+    "@connectrpc/connect-node": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

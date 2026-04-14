@@ -1,0 +1,37 @@
+# Node.js
+node_modules/
+dist/
+.npm/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+*.egg-info/
+.eggs/
+
+# Go
+*.test
+*.out
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# TLS certs (生成物)
+step10-production/certs/*.pem
+step10-production/certs/*.key
+step10-production/certs/*.crt
+
+# buf キャッシュ
+.buf/

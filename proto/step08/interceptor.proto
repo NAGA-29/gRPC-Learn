@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+// step08: Interceptor — logging / auth / metrics の共通処理
+package step08;
+
+option go_package = "github.com/grpc-learn/step08;step08";
+
+// 公開エンドポイント（認証不要）
+message PingRequest  { string message = 1; }
+message PingResponse {
+  string message    = 1;
+  string server_id  = 2; // サーバー識別子（handler 側で設定）
+  int64  latency_ms = 3; // サーバー内処理時間（現状の実装では未設定のため 0）
+}
+
+// 保護エンドポイント（Authorization ヘッダーが必要）
+message GetSecretRequest  {}
+message GetSecretResponse { string secret_data = 1; }
+
+service InterceptorService {
+  // 誰でも呼べる
+  rpc Ping(PingRequest) returns (PingResponse);
+
+  // metadata に "authorization: Bearer <token>" が必要
+  // token は "secret-token-12345"
+  rpc GetSecret(GetSecretRequest) returns (GetSecretResponse);
+}

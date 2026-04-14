@@ -1,0 +1,20 @@
+version: v2
+modules:
+  - path: proto/step01
+  - path: proto/step02
+  - path: proto/step03
+  - path: proto/step04
+  - path: proto/step05
+  - path: proto/step06
+  - path: proto/step07
+  - path: proto/step08
+  - path: proto/step09
+  - path: proto/step10
+lint:
+  use:
+    - DEFAULT
+  except:
+    - PACKAGE_VERSION_SUFFIX
+breaking:
+  use:
+    - FILE

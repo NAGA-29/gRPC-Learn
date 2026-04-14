@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+// step09: マルチサービス — BFF（API Gateway）が外部クライアントと向き合う
+package step09;
+
+option go_package = "github.com/grpc-learn/step09;step09";
+
+message PlaceOrderRequest {
+  string user_id    = 1;
+  string product_id = 2;
+  int32  quantity   = 3;
+}
+
+message PlaceOrderResponse {
+  string order_id            = 1;
+  string status              = 2;
+  string estimated_delivery  = 3;
+}
+
+// Gateway は外部クライアントからリクエストを受け取り、
+// 内部の InventoryService と NotificationService を呼び出す
+service GatewayService {
+  rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+}

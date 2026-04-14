@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+// step04: Unary 設計 — FieldMask / ページネーション / Money 型 / REST との比較
+package step04;
+
+import "google/protobuf/field_mask.proto";
+
+option go_package = "github.com/grpc-learn/step04;step04";
+
+// Money 型（float/double は精度問題があるため専用型を使う）
+message Money {
+  string currency_code = 1; // "JPY" / "USD"
+  int64  units         = 2; // 整数部（例: 1980）
+  int32  nanos         = 3; // 小数部 nanoseconds（例: 500000000 = 0.5）
+}
+
+// 商品
+message Product {
+  string id          = 1;
+  string name        = 2;
+  string description = 3;
+  Money  price       = 4;
+  string category    = 5;
+  bool   in_stock    = 6;
+}
+
+// --- GetProduct ---
+message GetProductRequest {
+  string                    id        = 1; // 商品 ID
+  google.protobuf.FieldMask read_mask = 2; // 取得するフィールドを制限する（省略時は全フィールド）
+}
+message GetProductResponse { Product product = 1; }
+
+// --- ListProducts（ページネーション）---
+message ListProductsRequest {
+  int32  page_size  = 1; // 1 ページあたりの件数（最大 100）
+  string page_token = 2; // 次ページのトークン（空なら先頭）
+}
+message ListProductsResponse {
+  repeated Product products        = 1;
+  string           next_page_token = 2; // 空なら最終ページ
+  int32            total_size      = 3; // 全件数
+}
+
+// --- UpdateProduct（FieldMask で部分更新）---
+// REST の PATCH 相当。update_mask で更新するフィールドを明示する。
+message UpdateProductRequest {
+  Product                    product     = 1;
+  google.protobuf.FieldMask  update_mask = 2;
+}
+message UpdateProductResponse { Product product = 1; }
+
+service ProductService {
+  rpc GetProduct    (GetProductRequest)    returns (GetProductResponse);
+  rpc ListProducts  (ListProductsRequest)  returns (ListProductsResponse);
+  rpc UpdateProduct (UpdateProductRequest) returns (UpdateProductResponse);
+}

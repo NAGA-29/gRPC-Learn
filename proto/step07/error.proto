@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+// step07: Error Handling — gRPC ステータスコードと Rich Error Details
+package step07;
+
+option go_package = "github.com/grpc-learn/step07;step07";
+
+// テストしたいエラーシナリオを選択する
+enum ErrorScenario {
+  ERROR_SCENARIO_UNSPECIFIED        = 0;
+  ERROR_SCENARIO_NOT_FOUND          = 1; // codes.NotFound
+  ERROR_SCENARIO_PERMISSION_DENIED  = 2; // codes.PermissionDenied
+  ERROR_SCENARIO_INVALID_ARGUMENT   = 3; // codes.InvalidArgument（BadRequest詳細付き）
+  ERROR_SCENARIO_UNAVAILABLE        = 4; // codes.Unavailable（リトライ可能）
+  ERROR_SCENARIO_RESOURCE_EXHAUSTED = 5; // codes.ResourceExhausted
+  ERROR_SCENARIO_INTERNAL           = 6; // codes.Internal
+}
+
+message TriggerErrorRequest {
+  ErrorScenario scenario    = 1;
+  string        resource_id = 2; // エラーメッセージに含めるリソース ID
+}
+
+message TriggerErrorResponse {
+  string result = 1; // シナリオが ERROR_SCENARIO_UNSPECIFIED のときだけ返る
+}
+
+// Rich Error Details（google.rpc.BadRequest 相当を自前で定義）
+message FieldViolation {
+  string field       = 1;
+  string description = 2;
+}
+
+message BadRequestDetail {
+  repeated FieldViolation violations = 1;
+}
+
+service ErrorService {
+  rpc TriggerError(TriggerErrorRequest) returns (TriggerErrorResponse);
+}

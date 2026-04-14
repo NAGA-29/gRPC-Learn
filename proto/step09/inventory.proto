@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+// step09: マルチサービス — 在庫管理サービス（内部サービス）
+package step09;
+
+option go_package = "github.com/grpc-learn/step09;step09";
+
+message ReserveStockRequest {
+  string product_id = 1;
+  int32  quantity   = 2;
+  string order_id   = 3;
+}
+
+message ReserveStockResponse {
+  bool  reserved        = 1;
+  int32 remaining_stock = 2;
+}
+
+// Gateway からのみ呼ばれる内部サービス
+service InventoryService {
+  rpc ReserveStock(ReserveStockRequest) returns (ReserveStockResponse);
+}
