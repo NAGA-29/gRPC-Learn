@@ -51,6 +51,93 @@ chmod +x /usr/local/bin/buf
 
 ---
 
+## gRPC を使う基本的な作業の流れ
+
+gRPC は「**スキーマ駆動 (schema-first)**」の仕組みです。`.proto` ファイルを起点に、サーバーとクライアントのコードを自動生成して開発を進めます。
+
+```
+[1] .proto を定義
+        ↓
+[2] スタブを生成（buf generate）
+        ↓
+[3] サーバー実装（Go）
+        ↓
+[4] クライアント実装（TS / Python）
+        ↓
+[5] 動作確認（go run / npm start / grpcurl）
+```
+
+### 1. `.proto` ファイルで API を定義する
+
+サービス（RPC のエンドポイント）とメッセージ（リクエスト / レスポンスの型）を Protocol Buffers の文法で記述します。
+
+```proto
+// proto/step02/greeter.proto の例
+service GreeterService {
+  rpc SayHello(SayHelloRequest) returns (SayHelloResponse);
+}
+
+message SayHelloRequest {
+  string name = 1;
+  string language = 2;
+}
+```
+
+このリポジトリでは `proto/stepXX/` 配下に配置します。
+
+### 2. スタブ（自動生成コード）を作る
+
+`buf generate` を実行すると、`buf.gen.yaml` の設定に従って各言語のコードが生成されます。
+
+| 言語 | 生成内容 | 出力先 |
+|------|---------|--------|
+| Go | メッセージ型 + サーバー/クライアントスタブ | 各 step の `server-go/gen/` |
+| TypeScript | Connect-ES クライアント | 各 step の `client-ts/gen/` |
+| Python | メッセージ型 + gRPC スタブ | `step03-.../client-py/gen/` |
+
+> 生成されたコードは編集しません。`.proto` を変更したら必ず `buf generate` で再生成します。
+
+### 3. サーバー側を実装する
+
+生成された `UnimplementedXxxServer` を埋め込んだ構造体に、各 RPC メソッドを実装します。
+
+```go
+type greeterServer struct {
+  pb.UnimplementedGreeterServiceServer
+}
+
+func (s *greeterServer) SayHello(ctx context.Context, req *pb.SayHelloRequest) (*pb.SayHelloResponse, error) {
+  return &pb.SayHelloResponse{Message: "Hello, " + req.Name}, nil
+}
+```
+
+最後に `grpc.NewServer()` に登録してポートを listen させます。
+
+### 4. クライアント側を実装する
+
+生成されたクライアントスタブを呼び出すだけで RPC を実行できます。HTTP のように URL やメソッドを意識する必要はありません。
+
+```ts
+// TypeScript (Connect-ES)
+const client = createClient(GreeterService, transport);
+const res = await client.sayHello({ name: "World", language: "ja" });
+```
+
+### 5. 動作確認する
+
+- **正規のクライアントで実行**: `go run .` / `npm start` / `python client.py`
+- **CLI で手動リクエスト**: `grpcurl -plaintext localhost:50051 list` でサービス一覧、`grpcurl -d '{"name":"World"}' -plaintext localhost:50051 step02.GreeterService/SayHello` で個別呼び出し
+- **リフレクション**: サーバーで `reflection.Register` を呼んでおくと、`.proto` がなくても `grpcurl` から探索できます
+
+### `.proto` を変更したときのループ
+
+1. `.proto` を編集する
+2. `buf generate`（および必要なら `bash scripts/gen-python.sh`）でスタブを再生成
+3. サーバー / クライアントのコードをコンパイルエラーに従って修正
+4. サーバーを再起動し、クライアント or `grpcurl` で再確認
+
+---
+
 ## リポジトリ構成
 
 ```
