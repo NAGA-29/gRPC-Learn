@@ -27,14 +27,14 @@
 ```bash
 # リポジトリルートで実行
 
-# 1. lint: スタイルガイド違反を確認
-buf lint proto/step01
+# 1. lint: スタイルガイド違反を確認（--path で step01 だけに絞る）
+buf lint --path proto/step01
 
-# 2. build: proto ファイルが正しくコンパイルできるか確認
-buf build proto/step01
+# 2. build: proto ファイルが正しくコンパイルできるか確認（ワークスペース全体）
+buf build
 
-# 3. breaking: 互換性チェック（git の前コミットと比較）
-buf breaking proto/step01 --against '.git#branch=main'
+# 3. breaking: 互換性チェック（git の main ブランチと比較）
+buf breaking --against '.git#branch=main' --path proto/step01
 ```
 
 ---

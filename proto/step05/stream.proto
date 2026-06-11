@@ -19,10 +19,11 @@ message FileChunk {
   int32  sequence  = 2;
   string file_name = 3;
 }
-message UploadSummary {
-  int32  chunk_count = 1;
-  int64  total_bytes = 2;
-  string status      = 3;
+message UploadFileSummary {
+  string file_name   = 1; // 最初のチャンクから取得したファイル名
+  int64  total_bytes = 2; // 受信した合計バイト数
+  int32  chunk_count = 3; // 受信したチャンク数
+  string message     = 4; // 完了メッセージ
 }
 
 // --- 双方向ストリーミング: チャット ---
@@ -38,7 +39,7 @@ service StreamService {
   rpc WatchStock(WatchStockRequest) returns (stream StockPrice);
 
   // クライアントストリーミング: ファイルをチャンクに分割して送信し、完了サマリを受け取る
-  rpc UploadFile(stream FileChunk) returns (UploadSummary);
+  rpc UploadFile(stream FileChunk) returns (UploadFileSummary);
 
   // 双方向ストリーミング: チャットルーム
   rpc Chat(stream ChatMessage) returns (stream ChatMessage);

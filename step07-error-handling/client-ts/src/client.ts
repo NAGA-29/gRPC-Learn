@@ -14,7 +14,7 @@
  * 前提: Go サーバーが localhost:50051 で起動していること
  *   cd ../server-go && go run .
  */
-import { createClient, ConnectError } from "@connectrpc/connect";
+import { createClient, ConnectError, Code } from "@connectrpc/connect";
 import { createGrpcTransport } from "@connectrpc/connect-node";
 
 // buf generate で生成されるファイルをインポート
@@ -25,7 +25,6 @@ async function main() {
   // gRPC トランスポートを設定（HTTP/2）
   const transport = createGrpcTransport({
     baseUrl: "http://localhost:50051",
-    httpVersion: "2",
   });
 
   // ErrorService クライアントを生成
@@ -95,7 +94,7 @@ async function main() {
       const connectErr = ConnectError.from(err);
 
       console.log(`  エラー受信:`);
-      console.log(`    code:    ${connectErr.code} (${connectErr.code})`);
+      console.log(`    code:    ${connectErr.code} (${Code[connectErr.code]})`);
       console.log(`    message: ${connectErr.message}`);
 
       // INVALID_ARGUMENT の場合は Rich Error Details を表示する

@@ -88,22 +88,23 @@ func main() {
 
 	// --- TLS 設定 ---
 	// TLS_ENABLED=true の場合、TLS ありで起動する。
-	// certs/ ディレクトリに server.crt と server.key が必要（generate.sh で生成）。
+	// ../certs/ ディレクトリに server.crt と server.key が必要（generate.sh で生成）。
+	// サーバーは server-go/ から `go run .` で起動する想定のため、1 つ上の certs/ を参照する。
 	tlsEnabled := os.Getenv("TLS_ENABLED") == "true"
 
 	var serverOpts []grpc.ServerOption
 
 	if tlsEnabled {
 		logger.Info("TLS モードで起動します",
-			zap.String("cert", "certs/server.crt"),
-			zap.String("key", "certs/server.key"),
+			zap.String("cert", "../certs/server.crt"),
+			zap.String("key", "../certs/server.key"),
 		)
 		// 証明書と秘密鍵を読み込む
-		cert, err := tls.LoadX509KeyPair("certs/server.crt", "certs/server.key")
+		cert, err := tls.LoadX509KeyPair("../certs/server.crt", "../certs/server.key")
 		if err != nil {
 			logger.Fatal("TLS 証明書の読み込み失敗",
 				zap.Error(err),
-				zap.String("hint", "cd certs && bash generate.sh で証明書を生成してください"),
+				zap.String("hint", "cd ../certs && bash generate.sh で証明書を生成してください"),
 			)
 		}
 		tlsConfig := &tls.Config{

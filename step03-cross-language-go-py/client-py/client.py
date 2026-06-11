@@ -9,13 +9,20 @@ Step 03: Python gRPC クライアント
   python client.py
 """
 
-import grpc
+import os
 import sys
+
+import grpc
 
 # grpc_tools.protoc で生成されたファイルをインポート
 # 事前に `bash ../../scripts/gen-python.sh` を実行してください
+#
+# 生成コード（greeter_pb2_grpc.py）は `from step03 import greeter_pb2` という
+# 絶対インポートを行うため、gen/ ディレクトリを sys.path に追加しておく必要がある。
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen"))
+
 try:
-    from gen.step03 import greeter_pb2, greeter_pb2_grpc
+    from step03 import greeter_pb2, greeter_pb2_grpc
 except ImportError:
     print("エラー: 生成済みコードが見つかりません。")
     print("以下を実行して Python スタブを生成してください:")

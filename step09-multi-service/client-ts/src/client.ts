@@ -28,7 +28,6 @@ async function main() {
   // GatewayService への gRPC トランスポートを設定（HTTP/2, TLS なし）
   const transport = createGrpcTransport({
     baseUrl: "http://localhost:50051",
-    httpVersion: "2",
   });
 
   // GatewayService クライアントを生成

@@ -2,6 +2,7 @@
 node_modules/
 dist/
 .npm/
+package-lock.json
 
 # Python
 __pycache__/
@@ -35,3 +36,9 @@ step10-production/certs/*.crt
 
 # buf キャッシュ
 .buf/
+
+# buf / protoc が生成するコード（bash scripts/gen.sh で再生成できる）
+**/gen/**/*.go
+**/gen/**/*.ts
+**/gen/**/*_pb2.py
+**/gen/**/*_pb2_grpc.py

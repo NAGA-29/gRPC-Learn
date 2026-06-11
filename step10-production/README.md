@@ -43,7 +43,7 @@ bash generate.sh
 ### 2. サーバー側の TLS 設定
 
 `TLS_ENABLED` 環境変数で TLS を有効化します。
-証明書ファイルは `certs/server.crt` と `certs/server.key` から読み込みます。
+証明書ファイルは `../certs/server.crt` と `../certs/server.key`（`server-go/` から見た相対パス）から読み込みます。
 
 ```bash
 # TLS なし（insecure）で起動
@@ -57,7 +57,7 @@ TLS_ENABLED=true go run .
 サーバーコードでの TLS 設定:
 
 ```go
-cert, err := tls.LoadX509KeyPair("certs/server.crt", "certs/server.key")
+cert, err := tls.LoadX509KeyPair("../certs/server.crt", "../certs/server.key")
 tlsConfig := &tls.Config{
     Certificates: []tls.Certificate{cert},
     MinVersion:   tls.VersionTLS12, // TLS 1.2 以上を要求
@@ -71,7 +71,7 @@ grpc.NewServer(grpc.Creds(credentials.NewTLS(tlsConfig)))
 
 ```go
 // Go クライアント（自己署名証明書を信頼する場合）
-creds, err := credentials.NewClientTLSFromFile("certs/server.crt", "localhost")
+creds, err := credentials.NewClientTLSFromFile("../certs/server.crt", "localhost")
 conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(creds))
 ```
 
@@ -82,9 +82,8 @@ TypeScript クライアント（@connectrpc/connect-node）では:
 import * as fs from "fs";
 const transport = createGrpcTransport({
   baseUrl: "https://localhost:50051",
-  httpVersion: "2",
   nodeOptions: {
-    ca: fs.readFileSync("certs/server.crt"),
+    ca: fs.readFileSync("../certs/server.crt"),
   },
 });
 ```
@@ -327,6 +326,9 @@ case <-time.After(30 * time.Second):
 ## 起動方法
 
 ```bash
+# 0. コード生成（初回のみ・リポジトリルートで実行）
+bash scripts/gen.sh
+
 # 1. 証明書の生成（初回のみ）
 cd step10-production/certs && bash generate.sh
 

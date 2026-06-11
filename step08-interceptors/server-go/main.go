@@ -5,7 +5,6 @@ package main
 
 import (
 	"net"
-	"os"
 
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -71,8 +70,8 @@ func main() {
 	)
 
 	// ブロッキングでサーバーを起動する
+	// logger.Fatal はログ出力後に os.Exit(1) を呼ぶため、追加の終了処理は不要
 	if err := server.Serve(lis); err != nil {
 		logger.Fatal("Serve 失敗", zap.Error(err))
-		os.Exit(1)
 	}
 }

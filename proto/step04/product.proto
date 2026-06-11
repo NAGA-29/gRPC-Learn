@@ -11,7 +11,7 @@ option go_package = "github.com/grpc-learn/step04;step04";
 message Money {
   string currency_code = 1; // "JPY" / "USD"
   int64  units         = 2; // 整数部（例: 1980）
-  int32  nanos         = 3; // 小数部 nanoseconds（例: 500000000 = 0.5）
+  int32  nanos         = 3; // 小数部（1e-9 単位。例: 500000000 = 0.5）
 }
 
 // 商品

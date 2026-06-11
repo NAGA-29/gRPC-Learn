@@ -12,8 +12,7 @@
 ## ディレクトリ構成
 
 ```
-step04-unary-design/
-├── proto/               # .proto ファイル（step03 の buf ワークスペース共有または独立配置）
+step04-unary-design/     # ※ .proto は リポジトリルートの proto/step04/ に配置
 ├── server-go/           # Go gRPC サーバー
 │   ├── main.go
 │   ├── go.mod
@@ -35,8 +34,8 @@ step04-unary-design/
 ### 1. Proto ファイルの生成
 
 ```bash
-# リポジトリルートまたは proto/ ディレクトリで実行
-buf generate
+# リポジトリルートで実行
+bash scripts/gen.sh
 ```
 
 生成物は `server-go/gen/step04/` と `client-ts/gen/step04/` に配置されます。

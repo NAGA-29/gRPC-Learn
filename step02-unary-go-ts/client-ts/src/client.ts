@@ -15,7 +15,6 @@ async function main() {
   // gRPC トランスポートを設定（HTTP/2）
   const transport = createGrpcTransport({
     baseUrl: "http://localhost:50051",
-    httpVersion: "2",
   });
 
   // クライアントを生成

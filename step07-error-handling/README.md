@@ -177,7 +177,7 @@ step07-error-handling/
 
 ```bash
 # リポジトリルートで実行
-buf generate
+bash scripts/gen.sh
 ```
 
 ### 2. Go サーバーを起動
@@ -204,12 +204,12 @@ npm start
 
 --- 1. NOT_FOUND（リソースが存在しない） ---
   エラー受信:
-    code:    5 (5)
+    code:    5 (NotFound)
     message: [not_found] リソース 'item-42' が見つかりません
 
 --- 3. INVALID_ARGUMENT（不正なパラメータ + BadRequestDetail） ---
   エラー受信:
-    code:    3 (3)
+    code:    3 (InvalidArgument)
     message: [invalid_argument] リクエストパラメータが不正です
     details: 1 件の詳細情報が含まれています
 

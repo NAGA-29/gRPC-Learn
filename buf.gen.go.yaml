@@ -15,8 +15,3 @@ plugins:
     out: gen
     opt:
       - paths=source_relative
-  # TypeScript — @connectrpc/connect（Node + ブラウザ対応）
-  - remote: buf.build/connectrpc/es
-    out: gen
-    opt:
-      - target=ts
