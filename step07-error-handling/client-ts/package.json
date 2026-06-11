@@ -2,10 +2,11 @@
   "name": "grpc-learn-step07-client",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "ts-node --esm src/client.ts",
+    "start": "tsx src/client.ts",
     "build": "tsc",
-    "gen": "buf generate"
+    "gen": "buf generate ../../proto --template ../../buf.gen.ts.yaml --path ../../proto/step07"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.0.0",
@@ -14,7 +15,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.0",
     "typescript": "^5.9.3"
   }
 }

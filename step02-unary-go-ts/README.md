@@ -35,8 +35,8 @@ step02-unary-go-ts/
 ### 1. コード生成（初回のみ）
 
 ```bash
-# リポジトリルートで実行
-buf generate
+# リポジトリルートで実行（全ステップの Go / TS スタブを一括生成）
+bash scripts/gen.sh
 ```
 
 生成されるファイル:

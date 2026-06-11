@@ -13,8 +13,7 @@
 ## ディレクトリ構成
 
 ```
-step05-streaming/
-├── proto/               # .proto ファイル
+step05-streaming/        # ※ .proto は リポジトリルートの proto/step05/ に配置
 ├── server-go/           # Go gRPC サーバー
 │   ├── main.go
 │   ├── go.mod
@@ -64,7 +63,8 @@ step05-streaming/
 ### 1. Proto ファイルの生成
 
 ```bash
-buf generate
+# リポジトリルートで実行
+bash scripts/gen.sh
 ```
 
 ### 2. Go サーバー

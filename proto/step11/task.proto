@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+// step11: 応用編 — gRPC のテストとクライアント側の信頼性（リトライ）
+//
+// TaskService は bufconn を使った単体テストの題材。
+// FlakyEcho は「何回か失敗してから成功する」RPC で、
+// クライアント側リトライポリシー（service config）の動作確認に使う。
+package step11;
+
+option go_package = "github.com/grpc-learn/step11;step11";
+
+// タスク
+message Task {
+  string id         = 1;
+  string title      = 2;
+  bool   done       = 3;
+  string created_at = 4; // RFC3339
+}
+
+// --- CreateTask ---
+message CreateTaskRequest {
+  string title = 1; // 空文字列は InvalidArgument
+}
+message CreateTaskResponse {
+  Task task = 1;
+}
+
+// --- GetTask ---
+message GetTaskRequest {
+  string id = 1; // 存在しない ID は NotFound
+}
+message GetTaskResponse {
+  Task task = 1;
+}
+
+// --- FlakyEcho（リトライ学習用） ---
+// 同じ message に対して fail_count 回 Unavailable を返し、
+// fail_count + 1 回目の呼び出しで成功する。
+message FlakyEchoRequest {
+  string message    = 1;
+  int32  fail_count = 2; // 何回失敗させるか（0 なら常に成功）
+}
+message FlakyEchoResponse {
+  string message  = 1;
+  int32  attempts = 2; // サーバーが受け付けた累計試行回数
+}
+
+service TaskService {
+  rpc CreateTask (CreateTaskRequest) returns (CreateTaskResponse);
+  rpc GetTask    (GetTaskRequest)    returns (GetTaskResponse);
+  rpc FlakyEcho  (FlakyEchoRequest)  returns (FlakyEchoResponse);
+}

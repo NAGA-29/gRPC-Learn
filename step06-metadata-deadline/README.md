@@ -131,7 +131,7 @@ step06-metadata-deadline/
 
 ```bash
 # リポジトリルートで実行
-buf generate
+bash scripts/gen.sh
 ```
 
 ### 2. Go サーバーを起動

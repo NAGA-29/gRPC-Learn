@@ -41,20 +41,20 @@ step09-multi-service/
 ├── gateway/               # GatewayService (BFF, :50051)
 │   ├── main.go
 │   ├── go.mod
-│   └── gen/step09/        # buf generate で生成（要: buf generate）
+│   └── gen/step09/        # bash scripts/gen.sh で生成
 ├── inventory-svc/         # InventoryService (:50052)
 │   ├── main.go
 │   ├── go.mod
-│   └── gen/step09/        # buf generate で生成（要: buf generate）
+│   └── gen/step09/        # bash scripts/gen.sh で生成
 ├── notification-worker/   # NotificationService (:50053)
 │   ├── main.go
 │   ├── go.mod
-│   └── gen/step09/        # buf generate で生成（要: buf generate）
+│   └── gen/step09/        # bash scripts/gen.sh で生成
 └── client-ts/             # TypeScript クライアント
     ├── src/client.ts
     ├── package.json
     ├── tsconfig.json
-    └── gen/step09/        # buf generate で生成（要: npm run gen）
+    └── gen/step09/        # bash scripts/gen.sh で生成（npm run gen でも可）
 ```
 
 ## 起動順序
@@ -206,7 +206,8 @@ Go の実装例: `github.com/sony/gobreaker`, `github.com/afex/hystrix-go`
 このステップの Gateway では通知送信に 3 秒のタイムアウトを設定しています。
 
 ```go
-notifyCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+// リクエストの ctx を親にすることで、クライアントのキャンセルも伝播する
+notifyCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
 ```
 
 本番では:

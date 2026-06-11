@@ -33,7 +33,7 @@ cd step03-cross-language-go-py/server-go
 go mod tidy
 ```
 
-> **注意:** buf で Go スタブも生成する場合は `buf generate` も実行してください。
+> **注意:** Go スタブは `bash scripts/gen.sh`（リポジトリルートで実行）で生成できます。
 
 ### 3. Python の依存関係をインストール
 
@@ -82,8 +82,15 @@ python client.py
 ### 同期クライアント（基本）
 
 ```python
+import os
+import sys
+
 import grpc
-from gen.step03 import greeter_pb2, greeter_pb2_grpc
+
+# 生成コードは `from step03 import ...` という絶対インポートを行うため
+# gen/ を sys.path に追加してからインポートする
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen"))
+from step03 import greeter_pb2, greeter_pb2_grpc
 
 with grpc.insecure_channel("localhost:50051") as channel:
     stub = greeter_pb2_grpc.GreeterServiceStub(channel)
@@ -139,11 +146,12 @@ except grpc.RpcError as e:
 ```bash
 pip install grpcio-tools
 
+# リポジトリルートで実行（scripts/gen-python.sh と同じレイアウトで生成される）
 python3 -m grpc_tools.protoc \
-  --proto_path=proto/step03 \
-  --python_out=step03-cross-language-go-py/client-py/gen/step03 \
-  --grpc_python_out=step03-cross-language-go-py/client-py/gen/step03 \
-  proto/step03/greeter.proto
+  --proto_path=proto \
+  --python_out=step03-cross-language-go-py/client-py/gen \
+  --grpc_python_out=step03-cross-language-go-py/client-py/gen \
+  step03/greeter.proto
 ```
 
 ---

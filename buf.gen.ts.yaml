@@ -1,0 +1,7 @@
+version: v2
+plugins:
+  # TypeScript — @connectrpc/connect（Node + ブラウザ対応）
+  - remote: buf.build/connectrpc/es
+    out: gen
+    opt:
+      - target=ts

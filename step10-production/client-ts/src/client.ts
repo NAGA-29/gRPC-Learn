@@ -17,6 +17,8 @@
  */
 import { createClient, ConnectError, Code } from "@connectrpc/connect";
 import { createGrpcTransport } from "@connectrpc/connect-node";
+// google.protobuf.Timestamp を Date に変換するヘルパー（protobuf-es v2）
+import { timestampDate } from "@bufbuild/protobuf/wkt";
 
 // buf generate で生成されるファイルをインポート
 // 事前に `npm run gen` を実行してください
@@ -25,10 +27,9 @@ import { ProductionService } from "../gen/step10/production_pb.js";
 async function main() {
   // gRPC トランスポートを設定（HTTP/2, TLS なし）
   // TLS 有効化サーバーに接続する場合は baseUrl を "https://localhost:50051" に変更し、
-  // httpVersion: "2" と適切な TLS 設定が必要
+  // nodeOptions で CA 証明書を指定する（README 参照）
   const transport = createGrpcTransport({
     baseUrl: "http://localhost:50051",
-    httpVersion: "2",
   });
 
   // ProductionService クライアントを生成
@@ -47,7 +48,7 @@ async function main() {
     console.log(`  ステータス:   ${res.status} (1=SERVING, 2=NOT_SERVING)`);
     console.log(`  メッセージ:   ${res.message}`);
     if (res.checkedAt) {
-      console.log(`  チェック日時: ${res.checkedAt.toDate().toISOString()}`);
+      console.log(`  チェック日時: ${timestampDate(res.checkedAt).toISOString()}`);
     }
   } catch (err) {
     if (err instanceof ConnectError) {

@@ -137,7 +137,7 @@ const res = await client.getSecret(
 
 ```bash
 # 1. プロトファイルからコードを生成
-buf generate   # リポジトリルートで実行
+bash scripts/gen.sh   # リポジトリルートで実行
 
 # 2. Go サーバーを起動
 cd step08-interceptors/server-go

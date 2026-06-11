@@ -5,7 +5,6 @@
 package handler
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -231,8 +230,3 @@ func (s *StreamServer) broadcast(room string, msg *pb.ChatMessage, _ pb.StreamSe
 func isEOF(err error) bool {
 	return errors.Is(err, io.EOF)
 }
-
-// ----------------------------------------------------------------
-// context を明示的に使用するダミー（go vet の unused import 対策）
-// ----------------------------------------------------------------
-var _ context.Context
